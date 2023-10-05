@@ -600,10 +600,8 @@ class HasamiShogiGame:
         print("i", separator.join(board[8]))
 
 
-if __name__ == "__main__":
-    game = HasamiShogiGame()
-    game.print_board()
-
+#game = HasamiShogiGame()
+#game.print_board()
 #game.make_move("i8", "g8")
 #print(game.get_active_player())
 #game.make_move("a9", "h9")
