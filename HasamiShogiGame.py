@@ -143,7 +143,6 @@ class HasamiShogiGame:
         print("Red captured=", self._red_captured)
         print("Game state= ", self._game_state)
         print("Player turn= ", self._active_player)
-        #return True
 
     def check_valid_move(self, moved_from, moved_to):
         """
