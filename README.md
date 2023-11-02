@@ -7,7 +7,7 @@ controls the Red pieces 'R', and the other the Black pieces 'B'. The point of th
 or all but one of your opponents pieces.
 
 Game Play
-The game begins with the player controling the black pieces. On your turn you can move any one piece
+The game begins with the player controlling the black pieces. On your turn you can move any one piece
 veritcal or horizontal on the game board (similar to a rook in chess). You cannot move through other pieces.
 Play passes back and forth until the game is over (when one player has 0 or 1 pieces left).
 
