@@ -15,6 +15,7 @@ Capturing pieces
 Similar to 'Go' you can capture one or more pieces by having one of your pieces on each side of an opponent's 
 piece(s). You may also capture a corner piece by being on the space above or below it and the other on one side or the other (see the following diagram)
 
+(Imagine this is the upper left corner)
 B R _ _ _
 R _ _ _ _
 
