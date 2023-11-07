@@ -128,22 +128,82 @@ class HasamiShogiGame:
             #print("False, active player")
             return False
 
-        valid_move = self.check_valid_move(moved_from, moved_to)
-        if valid_move[0] is False:
-            #print(valid_move, "= board move")
+        #checks for valid input
+        valid_input = self.check_valid_input(moved_from, moved_to)
+        if valid_input is False:
             return False
+        #checks for valid move
+        valid_move = self.check_valid_move(moved_from, moved_to)
+        if valid_move is False:
+            return False
+        
         self.update_game_board(moved_from, moved_to)
         self.check_for_captures(moved_to)
         self.corner_capture_check(moved_to)
         self.update_game_state()
         self.player_turn()
 
-        print(self.print_board())
-        print("Black captured=", self._black_captured)
-        print("Red captured=", self._red_captured)
-        print("Game state= ", self._game_state)
-        print("Player turn= ", self._active_player)
+    def check_valid_input(self, moved_from, moved_to):
+        """
+        This function checks to make sure that the inputs from moved_from and moved_to are valid moves for the game board
+        """
 
+        #check valid input lengths
+        if len(moved_from) != 2:
+            return False             
+        if len(moved_to) != 2:
+            return False
+        
+
+        valid_letters = "abcdefghi"
+        valid_numbers = "123456789"
+
+        from_row = moved_from[0]
+        from_col = moved_from[1]
+        to_row = moved_to[0]
+        to_col = moved_to[1]
+
+        #checking for valid letter/row from moved_from (selected_piece)
+        #initialize loop
+        test_answer = False
+        for letter in valid_letters:
+            if letter == from_row:
+                test_answer = True
+        #updating after loop
+        if test_answer == False:
+            return False
+        
+        #checking for valid number/column from moved_from (selected_piece)
+        test_answer = False
+        for num in valid_numbers:
+            if num == from_col:
+                test_answer = True
+        #updating after loop
+        if test_answer == False:
+            return False
+        
+        #checking for valid letter/row from moved_to (move_to)
+        #initialize loop
+        test_answer = False
+        for letter in valid_letters:
+            if letter == to_row:
+                test_answer = True
+        #updating after loop
+        if test_answer == False:
+            return False       
+
+        #checking for valid number/column from moved_to (move_to)
+        test_answer = False
+        for num in valid_numbers:
+            if num == to_col:
+                test_answer = True
+        #updating after loop
+        if test_answer == False:
+            return False
+        
+        #if no test returns False, then return True
+        return True
+ 
     def check_valid_move(self, moved_from, moved_to):
         """
         This is a helper function to the 'make_move' function, it checks to see if the proposed move is a valid one by
@@ -152,11 +212,15 @@ class HasamiShogiGame:
         :return:
         """
 
+        if moved_from == moved_to:
+            return False
+        
         moved_from_tuple = self.convert_board_notation(moved_from)
         moved_to_tuple = self.convert_board_notation(moved_to)
         valid_move = [True]
 
-        if moved_from_tuple[0] == moved_to_tuple[0]:  # checks for non-horizontal or vertical moves
+        # checks for non-horizontal or vertical moves
+        if moved_from_tuple[0] == moved_to_tuple[0]:
             pass
         elif moved_from_tuple[1] == moved_to_tuple[1]:
             pass
@@ -165,7 +229,8 @@ class HasamiShogiGame:
             valid_move.append("not valid direction")
             return valid_move
 
-        if moved_from_tuple[0] == moved_to_tuple[0]:    # checks to see if it's a horizontal move, using rows
+        # checks to see if it's a horizontal move, using rows
+        if moved_from_tuple[0] == moved_to_tuple[0]:    
             row = self._game_board[moved_from_tuple[0]]
             if moved_from_tuple[1] > moved_to_tuple[1]:
                 row = row[moved_to_tuple[1]:moved_from_tuple[1]]
@@ -181,7 +246,8 @@ class HasamiShogiGame:
                     return valid_move
                 return valid_move
 
-        if moved_from_tuple[1] == moved_to_tuple[1]:    # for a vertical  move
+        # for a vertical  move
+        if moved_from_tuple[1] == moved_to_tuple[1]:    
             game_board_columns = self.game_board_columns()
             column = game_board_columns[moved_from_tuple[1]]
             if moved_from_tuple[0] > moved_to_tuple[0]:
@@ -196,7 +262,7 @@ class HasamiShogiGame:
                     valid_move.append("occupied space, column")
                     return valid_move
             return valid_move
-
+        
     def check_for_captures(self, moved_to):
         """
         After a valid move has occurred, this checks for any valid captures, removes captured pieces and updates the
@@ -208,6 +274,7 @@ class HasamiShogiGame:
         moved_to_tuple = self.convert_board_notation(moved_to)
         square = self.get_square_occupant(moved_to)
 
+    #BLACK Captures
         if square == "RED":               # checking to the left for captures
             captured_squares = 0
             for space in range(1, 9):
@@ -311,6 +378,7 @@ class HasamiShogiGame:
                 else:
                     break
 
+    #RED Captures
         if square == "BLACK":  # checking to the left for captures
             captured_squares = 0
             for space in range(1, 9):
@@ -598,23 +666,65 @@ class HasamiShogiGame:
         print("h", separator.join(board[7]))
         print("i", separator.join(board[8]))
 
+    def play_game(self):
+        """
+        This is a helper function that does all the behind the scene function calls, to make the game easy to play for the user.
+        """
+        print("Game state= ", self.get_game_state())
+        print("Black captured=", self.get_num_captured_pieces("BLACK"))
+        print("Red captured=", self.get_num_captured_pieces("RED"))
+        game.print_board()
+        print("\nPlayer's turn:", game.get_active_player())
+        selected_piece = input("Select Piece:")
+        move_to = input("Move to:")
+        print("\n")
 
-#game = HasamiShogiGame()
-#game.print_board()
-#game.make_move("i8", "g8")
-#print(game.get_active_player())
-#game.make_move("a9", "h9")
-#game.make_move("g8", "g9")
-#game.make_move("b2", "b3")
-#game.make_move("i2", "a2")
-#game.make_move("b3", "b4")
-#game.make_move("c1", "b1")
-#game.make_move("d1", "d2")
-#game.make_move("i6", "f6")
-#game.make_move("a1", "a2")
+        check_input = game.check_valid_input(selected_piece, move_to)
+        if check_input == False:
+            print("**** INVALID INPUT! a1 --> i9 ONLY ****\n")
+            return
 
-#print(game.get_game_state())
-#print(game.get_active_player())
-#print("BLACK =", game.get_num_captured_pieces("BLACK"))
-#print("RED =", game.get_num_captured_pieces("RED"))
+        check_move = game.make_move(selected_piece, move_to)
+        if check_move == False:
+            print("#### INVALID MOVE! TRY AGAIN ####\n")
 
+
+if __name__ == "__main__":
+    print(
+        """
+\n************************************************************************************************************************\n
+                    Hello and Welcome to the Hasami Shogi Game! (Variant 1)\n
+Hasami Shogi is a game played on a board similar to chess or checkers. There are two players, where one
+controls the Red pieces 'R', and the other the Black pieces 'B'. The point of the game is to capture all
+or all but one of your opponents pieces.
+
+Game Play
+The game begins with the player controlling the Black pieces. On your turn you can move any one piece
+veritcal or horizontal on the game board (similar to a rook in chess). You cannot move through other pieces.
+Use algebraic coordinates to move, for example (i1, b1) Only valid lowercase letter/number pairs are valid.
+
+Play passes back and forth until the game is over (when one player has 0 or 1 pieces left).
+
+Capturing pieces
+Similar to 'Go' you can capture one or more pieces by having one of your pieces on each side of an opponent's 
+piece(s), either horizontally or vertically. You may also capture a corner piece by being on the space above 
+or below it and the other on one side or the other (see the following diagram for example)
+
+(Imagine this is the upper left corner)
+B R _ _ _
+R _ _ _ _
+
+Red would capture black's piece.
+
+************************************************************************************************************************\n
+"""
+    )
+    game = HasamiShogiGame()
+    while game._game_state == "UNFINISHED":
+        game.play_game()
+
+    print("Game state= ", game.get_game_state())
+    print("Black captured=", game.get_num_captured_pieces("BLACK"))
+    print("Red captured=", game.get_num_captured_pieces("RED"))
+    game.print_board()
+    print("Game state= ", game.get_game_state(),"\n")
